@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Laporan Keuangan Forum Remaja</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Font modern dan ringan -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      @page {
+        size: A4 landscape;
+        margin: 25mm;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        color: #111827;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        text-align: center;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #2563eb;
+        margin-bottom: 24px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        color: #2563eb;
+        margin: 0;
+      }
+
+      .header h2 {
+        font-size: 14px;
+        margin: 4px 0 0;
+        font-weight: 500;
+      }
+
+      .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-top: 24px;
+        border-bottom: 1px solid #1e3a8a;
+        padding-bottom: 6px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th {
+        background-color: #dbeafe;
+        color: #1e3a8a;
+        padding: 10px;
+        font-weight: 600;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      td {
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        font-size: 12px;
+      }
+
+      .summary-table td {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+
+      .right {
+        text-align: right;
+      }
+
+      .footer {
+        margin-top: 40px;
+        text-align: right;
+        font-style: italic;
+        font-size: 11px;
+        color: #6b7280;
+      }
+
+      .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        margin: 20px 0;
+        background-color: #f8fafc;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        height: 300px; /* Tinggi tetap agar stabil di PDF */
+      }
+
+      .signature {
+        margin-top: 60px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .signature-block {
+        text-align: center;
+        line-height: 1.4;
+        margin-right: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>LAPORAN KEUANGAN PANITIA 17 AGUSTUS</h1>
+      <h2>Acara: 17 Agustus-an & Malam Puncak</h2>
+      <h2>Lokasi: Cluster Palem Bumi Adipura, RW 09</h2>
+      <h2>Periode: {{periode}}</h2>
+    </div>
+
+    <!-- Ringkasan -->
+    <div class="section-title">Ringkasan Keuangan</div>
+    <table class="summary-table">
+      <tr>
+        <td>Total Pemasukan</td>
+        <td class="right">Rp {{total_pemasukan}}</td>
+      </tr>
+      <tr>
+        <td>Total Pengeluaran</td>
+        <td class="right">Rp {{total_pengeluaran}}</td>
+      </tr>
+      <tr>
+        <td>Saldo Akhir</td>
+        <td class="right">Rp {{saldo}}</td>
+      </tr>
+    </table>
+
+    <!-- Grafik -->
+    <div class="chart-container">
+      <canvas id="chartKeuangan" height="120"></canvas>
+    </div>
+
+    <!-- Tabel Pemasukan -->
+    <div class="section-title">📈 Rincian Pemasukan per Kategori</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%">No</th>
+          <th>Kategori</th>
+          <th style="width: 25%">Jumlah (Rp)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{table_pemasukan}}
+      </tbody>
+    </table>
+
+    <!-- Tabel Pengeluaran -->
+    <div class="section-title">📉 Rincian Pengeluaran per Kategori</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%">No</th>
+          <th>Kategori</th>
+          <th style="width: 25%">Jumlah (Rp)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{table_pengeluaran}}
+      </tbody>
+    </table>
+
+    <!-- Tanda Tangan -->
+    <div class="signature">
+      <div class="signature-block">
+        Hormat Kami,<br />
+        <strong>Bendahara Panitia 17-an</strong><br /><br /><br /><br />
+        Shafa Aileen Wicaksono
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Dicetak pada: {{tanggal_cetak}} • Sistem: Aplikasi Bendahara 17an
+    </div>
+
+    <!-- Chart Script -->
+    <script>
+      const ctx = document.getElementById('chartKeuangan').getContext('2d');
+
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: {{label_kategori}},
+          datasets: [
+            {
+              label: 'Pemasukan',
+              data: {{data_pemasukan}},
+              backgroundColor: '#10b981',
+              borderRadius: 6,
+              barPercentage: 0.6,
+            },
+            {
+              label: 'Pengeluaran',
+              data: {{data_pengeluaran}},
+              backgroundColor: '#ef4444',
+              borderRadius: 6,
+              barPercentage: 0.6,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          animation: false, // ⛔️ nonaktifkan animasi untuk PDF
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: {
+                  size: 12,
+                  family: 'Inter',
+                  weight: '600',
+                },
+                color: '#374151',
+              }
+            },
+            title: {
+              display: true,
+              text: 'Grafik Keuangan per Kategori',
+              font: {
+                size: 16,
+                family: 'Inter',
+                weight: '700'
+              },
+              color: '#1f2937',
+              padding: {
+                top: 10,
+                bottom: 20
+              }
+            },
+            tooltip: {
+              enabled: false // ⛔️ nonaktifkan tooltip karena tidak berguna di PDF
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                font: {
+                  family: 'Inter',
+                  size: 11,
+                  weight: '500'
+                },
+                color: '#374151'
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#e5e7eb',
+                borderDash: [4, 4],
+              },
+              ticks: {
+                font: {
+                  family: 'Inter',
+                  size: 11,
+                  weight: '500'
+                },
+                color: '#4b5563'
+              }
+            }
+          }
+        }
+      });
+
+      // Tunggu sebentar untuk memastikan chart ter-render sebelum Puppeteer cetak PDF
+      setTimeout(() => {
+        window.chartRendered = true;
+      }, 500);
+    </script>
+  </body>
+</html>
