@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const c = require("../../controllers/pengajuanController");
-const { verifyToken } = require("../../middlewares/authMiddleware");
-const { authorizeRole } = require("../../middlewares/roleMiddleware");
+const c = require("../controllers/pengajuanController");
+const { verifyToken } = require("../middlewares/authMiddleware");
+const { authorizeRole } = require("../middlewares/roleMiddleware");
 
 /* Maker */
 router.post(

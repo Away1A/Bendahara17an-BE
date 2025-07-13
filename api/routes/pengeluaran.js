@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../../controllers/pengeluaranController');
-const { verifyToken } = require('../../middlewares/authMiddleware');
-const { authorizeRole } = require('../../middlewares/roleMiddleware');
+const controller = require('../controllers/pengeluaranController');
+const { verifyToken } = require('../middlewares/authMiddleware');
+const { authorizeRole } = require('../middlewares/roleMiddleware');
 
 router.get('/', controller.getAll);
 router.get('/:id', controller.getById);
