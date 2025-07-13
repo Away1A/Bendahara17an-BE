@@ -1,5 +1,6 @@
 /** 1. SETUP EXPRESS NORMAL */
 const express = require('express');
+const serverless = require('serverless-http');
 const cors = require('cors');
 require('dotenv').config();
 
