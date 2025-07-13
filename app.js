@@ -13,12 +13,16 @@ const pemasukanRoutes = require('./routes/pemasukan');
 const pengeluaranRoutes = require('./routes/pengeluaran');
 const laporanRoutes = require('./routes/laporan');
 const laporanPdfRoutes = require('./routes/laporanPdf');
-
+const authRoutes = require('./routes/auth');
+const pengajuanRoutes = require('./routes/pengajuan')
 
 app.use('/api/pemasukan', pemasukanRoutes);
 app.use('/api/pengeluaran', pengeluaranRoutes);
 app.use('/api/laporan', laporanRoutes);
 app.use('/api/laporan-pdf', laporanPdfRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/pengajuan", pengajuanRoutes);
+
 
 
 app.get('/', (req, res) => res.send('API Bendahara 17-an Aktif'));
